@@ -14,9 +14,14 @@ func NewPermissionService(permRepo *PermissionRepo) *PermissionService {
 
 // }
 
-func (permServ *PermissionService) Create(permission *Permissions) {
+func (permServ *PermissionService) CreatePermission(permission *PermissionsCreateDTO) {
 	// CreatePermissionRepo(permission)
-	permServ.permissionRepo.CreatePermissionRepo(permission)
+	perm := Permissions{
+		CategoryID: permission.CategoryID,
+		Type:       permission.Type,
+		Name:       permission.Name,
+	}
+	permServ.permissionRepo.CreatePermissionRepo(&perm)
 }
 
 func (permServ *PermissionService) GetAllPermissions() *[]Permissions {
@@ -24,7 +29,11 @@ func (permServ *PermissionService) GetAllPermissions() *[]Permissions {
 	return permServ.permissionRepo.GetAll()
 }
 
-func (permServ *PermissionService) UpdatePermission(permission *Permissions) {
+func (permServ *PermissionService) UpdatePermission(permission *PermissionsUpdateDTO) {
 	// CreatePermissionRepo(permission)
-	permServ.permissionRepo.UpdatePermissionRepo(permission)
+	perm := Permissions{
+		ID:   permission.ID,
+		Name: permission.Name,
+	}
+	permServ.permissionRepo.UpdatePermissionRepo(&perm)
 }

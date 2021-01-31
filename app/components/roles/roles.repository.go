@@ -29,12 +29,17 @@ func NewRoleRepo(db *gorm.DB) *RoleRepo {
 }
 
 // Add add role
-func (roleRepo *RoleRepo) Add(role Roles) int {
+func (roleRepo *RoleRepo) Add(role Roles) (int, error) {
 	log.Println("adding user")
 	var id int
-	roleRepo.db.Raw("INSERT INTO organization_roles (name, description, organization_id) VALUES (?, ?, ?) returning id", role.Name, "", role.OrganizationID).Scan(&id)
+	err := roleRepo.db.Raw("INSERT INTO oorganization_roles (name, description, organization_id) VALUES (?, ?, ?) returning id", role.Name, role.Description, role.OrganizationID).Scan(&id)
 	log.Println(id)
-	return id
+	log.Println("teeeeeeeeeeeeeeeeeeeeeest", err.Error.Error())
+	if err != nil {
+		return 0, err.Error
+	}
+	// return id, nil
+	return id, nil
 }
 
 // Get get all roles

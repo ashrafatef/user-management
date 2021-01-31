@@ -1,6 +1,10 @@
 package roles
 
-import "log"
+import (
+	"log"
+	"net/http"
+	error_handler "userManagementApi/app/error_handler"
+)
 
 type RoleService struct {
 	roleRepo *RoleRepo
@@ -13,18 +17,25 @@ func NewRoleService(roleRepo *RoleRepo) *RoleService {
 }
 
 // add role
-func (roleServ *RoleService) Add(role RoleCreateDTO) Roles {
+func (roleServ *RoleService) Add(role RoleCreateDTO) (Roles, error) {
 	log.Println("adding user")
 	r := Roles{
 		Name:           role.Name,
 		OrganizationID: role.OrganizationID,
+		Description:    role.Description,
 	}
-	id := roleServ.roleRepo.Add(r)
+	id, err := roleServ.roleRepo.Add(r)
+	if err != nil {
+		// e := error_handler.FormateErrorResponse(http.StatusInternalServerError, err)
+		return Roles{}, error_handler.HandleError(http.StatusInternalServerError, "")
+	}
+	// id := roleServ.roleRepo.Add(r)
+
 	//check permission length
 	if len(role.Permissions) != 0 {
 		roleServ.roleRepo.Assign(id, role.Permissions)
 	}
-	return r
+	return r, nil
 }
 
 // update role

@@ -2,34 +2,14 @@ package roles
 
 import (
 	"fmt"
+	"net/http"
+	"userManagementApi/app/validation"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 )
 
 type RoleContoller struct {
 	roleService *RoleService
-}
-
-type RoleCreateDTO struct {
-	Name           string `json:"name" validate:"required"`
-	Description    string `json:"description" validate:"required"`
-	Permissions    []int  `json:"permissions" validate:"required"`
-	OrganizationID int    `json:"organization_id" validate:"required"`
-}
-
-type RoleUpdateDTO struct {
-	ID          int    `json:"id" validate:"required"`
-	Name        string `json:"name" validate:"required"`
-	Description string `json:"description" validate:"required"`
-	NewAssign   []int  `json:"newAssign" validate:"required"`
-	UnAssign    []int  `json:"UnAssign" validate:"required"`
-}
-
-type ErrorResponse struct {
-	Failed string
-	Tag    string
-	Value  string
 }
 
 func NewRoleController(roleService *RoleService) *RoleContoller {
@@ -45,6 +25,7 @@ func (roleCtrl *RoleContoller) Get(c *fiber.Ctx) error {
 	return c.SendString("Hello, from get roles!")
 }
 
+// Update update
 func (roleCtrl *RoleContoller) Update(c *fiber.Ctx) error {
 
 	role := new(RoleUpdateDTO)
@@ -55,7 +36,7 @@ func (roleCtrl *RoleContoller) Update(c *fiber.Ctx) error {
 		})
 	}
 
-	errors := ValidateStruct(*role)
+	errors := validation.ValidateStruct(*role)
 
 	if errors != nil {
 		return c.JSON(errors)
@@ -73,28 +54,17 @@ func (roleCtrl *RoleContoller) Create(c *fiber.Ctx) error {
 			"message": err.Error(),
 		})
 	}
-	errors := ValidateStruct(*role)
+	errors := validation.ValidateStruct(*role)
 
 	if errors != nil {
-		return c.JSON(errors)
-	}
-	roleCtrl.roleService.Add(*role)
-	c.JSON(role)
-	return c.SendString("Hello, from create roles!")
-}
+		// return c.JSON(errors)
+		return fiber.NewError(http.StatusMethodNotAllowed)
 
-func ValidateStruct(user interface{}) []*ErrorResponse {
-	var errors []*ErrorResponse
-	validate := validator.New()
-	err := validate.Struct(user)
-	if err != nil {
-		for _, err := range err.(validator.ValidationErrors) {
-			var element ErrorResponse
-			element.Failed = err.StructNamespace()
-			element.Tag = err.Tag()
-			element.Value = err.Param()
-			errors = append(errors, &element)
-		}
 	}
-	return errors
+	r, err := roleCtrl.roleService.Add(*role)
+	if err != nil {
+		return err
+	}
+	c.JSON(r)
+	return c.SendString("Hello, from create roles!")
 }
