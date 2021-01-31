@@ -3,6 +3,7 @@ package app
 import (
 	"log"
 	"userManagementApi/app/components/permissions"
+	"userManagementApi/app/components/roles"
 	"userManagementApi/app/database"
 
 	"github.com/gofiber/fiber/v2"
@@ -12,26 +13,20 @@ import (
 
 //setup function
 func SetUp() {
-
 	//load ENV
 	loadEnv()
-
 	app := fiber.New()
 	api := app.Group("/api")
-
 	// connect to DB
 	DB := database.ConnectToDB()
-	log.Print(DB)
 	// load components
 	loadComponents(api, DB)
-	// setup routes
-	// SetUpRoutes(app)
-
 	log.Fatal(app.Listen(":3000"))
 }
 
 func loadComponents(api fiber.Router, DB *gorm.DB) {
 	permissions.NewPermission(api, DB)
+	roles.NewRole(api, DB)
 }
 
 func loadEnv() {

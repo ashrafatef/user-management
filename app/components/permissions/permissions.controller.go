@@ -7,10 +7,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type PermissionDTO struct {
-	Name string `json:"name"`
-}
-
 type PermissionController struct {
 	permService *PermissionService
 }
