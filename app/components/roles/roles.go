@@ -16,10 +16,11 @@ func NewRole(api fiber.Router, DB *gorm.DB) {
 
 	roleCtrl := NewRoleController(roleService)
 
-	SetUpPermissionsRoutes(api, roleCtrl)
+	SetUpRolesRoutes(api, roleCtrl)
 }
 
-func SetUpPermissionsRoutes(api fiber.Router, roleCtrl *RoleContoller) {
+// SetUpRolesRoutes set routes
+func SetUpRolesRoutes(api fiber.Router, roleCtrl *RoleContoller) {
 
 	api.Get("/roles", roleCtrl.Get)
 	api.Get("/roles/:id", roleCtrl.GetByID)
