@@ -1,5 +1,10 @@
 package permissions
 
+import (
+	"net/http"
+	"userManagementApi/app/error_handler"
+)
+
 type PermissionService struct {
 	permissionRepo *PermissionRepo
 }
@@ -14,26 +19,55 @@ func NewPermissionService(permRepo *PermissionRepo) *PermissionService {
 
 // }
 
-func (permServ *PermissionService) CreatePermission(permission *PermissionsCreateDTO) {
+func (permServ *PermissionService) CreatePermission(permission *PermissionsCreateDTO) error {
 	// CreatePermissionRepo(permission)
 	perm := Permissions{
 		CategoryID: permission.CategoryID,
 		Type:       permission.Type,
 		Name:       permission.Name,
 	}
-	permServ.permissionRepo.CreatePermissionRepo(&perm)
+	err := permServ.permissionRepo.CreatePermissionRepo(&perm)
+	if err != nil {
+		return error_handler.HandleError(http.StatusInternalServerError, err.Error())
+	}
+	return nil
 }
 
-func (permServ *PermissionService) GetAllPermissions() *[]Permissions {
+func (permServ *PermissionService) GetAllPermissions() ([]Permissions, error) {
 	// CreatePermissionRepo(permission)
-	return permServ.permissionRepo.GetAll()
+
+	permissions, err := permServ.permissionRepo.GetAllPermissionsRepo()
+	if err != nil {
+		return []Permissions{}, error_handler.HandleError(http.StatusInternalServerError, err.Error())
+	}
+	return permissions, nil
 }
 
-func (permServ *PermissionService) UpdatePermission(permission *PermissionsUpdateDTO) {
-	// CreatePermissionRepo(permission)
+func (permServ *PermissionService) UpdatePermission(permission *PermissionsUpdateDTO) error {
 	perm := Permissions{
 		ID:   permission.ID,
 		Name: permission.Name,
 	}
-	permServ.permissionRepo.UpdatePermissionRepo(&perm)
+	err := permServ.permissionRepo.UpdatePermissionRepo(&perm)
+	if err != nil {
+		return error_handler.HandleError(http.StatusInternalServerError, err.Error())
+	}
+	return nil
+}
+
+func (permServ *PermissionService) DeletePermission(permID int) error {
+	var err error
+	var permissionID int64
+	permissionID, err = permServ.permissionRepo.CheckPermissionAssigning(permID)
+	if permissionID != 0 {
+		return error_handler.HandleError(http.StatusMethodNotAllowed, "")
+	}
+	if err != nil {
+		return error_handler.HandleError(http.StatusInternalServerError, err.Error())
+	}
+	err = permServ.permissionRepo.DeletePermissionRepo(permID)
+	if err != nil {
+		return error_handler.HandleError(http.StatusInternalServerError, err.Error())
+	}
+	return nil
 }

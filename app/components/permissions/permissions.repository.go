@@ -17,21 +17,47 @@ func NewPermissionRepo(db *gorm.DB) *PermissionRepo {
 	}
 }
 
-func (permRepo *PermissionRepo) CreatePermissionRepo(permission *Permissions) {
-	fmt.Println("in Repo Permission")
-	permRepo.db.Create(&permission)
+func (permRepo *PermissionRepo) CreatePermissionRepo(permission *Permissions) error {
+	res := permRepo.db.Create(&permission)
+	if res.Error != nil {
+		return res.Error
+	}
+	return nil
 }
 
-func (permRepo *PermissionRepo) GetAll() *[]Permissions {
-	var permission []Permissions
+func (permRepo *PermissionRepo) GetAllPermissionsRepo() ([]Permissions, error) {
+	var permissions []Permissions
 
-	fmt.Println("permission")
-	permRepo.db.Find(&permission)
-	fmt.Println(permission)
-	return &permission
+	res := permRepo.db.Find(&permissions)
+	if res.Error != nil {
+		return []Permissions{}, res.Error
+	}
+	fmt.Println(permissions)
+	return permissions, nil
 }
 
-func (permRepo *PermissionRepo) UpdatePermissionRepo(permission *Permissions) {
-	fmt.Println("in Repo Permission")
-	permRepo.db.Model(&permission).Update("name", permission.Name)
+func (permRepo *PermissionRepo) UpdatePermissionRepo(permission *Permissions) error {
+	res := permRepo.db.Model(&permission).Update("name", permission.Name)
+
+	if res.Error != nil {
+		return res.Error
+	}
+	return nil
+}
+
+func (permRepo *PermissionRepo) DeletePermissionRepo(permID int) error {
+	res := permRepo.db.Delete(&Permissions{}, permID)
+	if res.Error != nil {
+		return res.Error
+	}
+	return nil
+}
+
+func (permRepo *PermissionRepo) CheckPermissionAssigning(permID int) (int64, error) {
+	var id int
+	res := permRepo.db.Raw("SELECT id FROM permissions_roles WHERE permission_id=?", permID).Scan(&id)
+	if res.Error != nil {
+		return 0, res.Error
+	}
+	return res.RowsAffected, nil
 }

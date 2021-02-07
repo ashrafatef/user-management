@@ -18,3 +18,15 @@ func NewPermission(api fiber.Router, DB *gorm.DB) {
 	// set Routes
 	SetUpPermissionsRoutes(api, permCtrl)
 }
+
+func SetUpPermissionsRoutes(api fiber.Router, permCtrl *PermissionController) {
+
+	api.Get("/permissions", permCtrl.Get)
+
+	api.Post("/permissions", permCtrl.Create)
+
+	api.Put("/permissions", permCtrl.Update)
+
+	api.Delete("/permissions/:id", permCtrl.Delete)
+
+}

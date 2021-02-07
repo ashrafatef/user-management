@@ -9,8 +9,22 @@ type RoleCreateDTO struct {
 
 type RoleUpdateDTO struct {
 	ID          int    `json:"id" validate:"required"`
-	Name        string `json:"name" validate:""`
-	Description string `json:"description" validate:""`
+	Name        string `json:"name" validate:"required"`
+	Description string `json:"description" validate:"required"`
 	NewAssign   []int  `json:"newAssign" validate:"required"`
 	UnAssign    []int  `json:"UnAssign" validate:"required"`
+}
+
+type RoleDetails struct {
+	ID           int    `json:"id"`
+	Name         string `json:"name"`
+	Description  string `json:"description"`
+	PermissionID int    `json:"permission_id"`
+}
+
+type SingleRole struct {
+	ID          int    `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Permissions []int  `json:"permissions"`
 }

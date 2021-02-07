@@ -36,12 +36,29 @@ func SendError(ctx *fiber.Ctx, err ErrorResponseDTO) error {
 	return ctx.JSON(err)
 }
 
-func HandleError(code int, message string) error {
+func HandleError(code int, message interface{}) error {
 
 	// log.Fatal("Error: code is %i and message : %s",code, message)
-	var msg string = ""
-	if len(message) > 0 {
-		msg = message
+	// var msg string = ""
+	// if len(message) > 0 {
+	// 	msg = message
+	// }
+
+	var errors map[string]interface{}
+	return &Error{
+		Code:    500,
+		Message: errors,
+		Name:    "bl7",
 	}
-	return fiber.NewError(code, msg)
+	// return fiber.NewError(code, msg)
+}
+
+type Error struct {
+	Code    int                    `json:"code"`
+	Message map[string]interface{} `json:"message"`
+	Name    string                 `json:"name"`
+}
+
+func (e *Error) Error() string {
+	return ""
 }

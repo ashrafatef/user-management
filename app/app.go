@@ -8,6 +8,7 @@ import (
 	"userManagementApi/app/database"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
 	"gorm.io/gorm"
 )
@@ -18,9 +19,6 @@ func SetUp() {
 	loadEnv()
 	app := fiber.New(fiber.Config{
 		ErrorHandler: func(ctx *fiber.Ctx, err error) error {
-			fmt.Println("FROOOOOOOOOOOOOOOOOOOOOOOOOM EROOOOOOOOOOOOOOOOORr")
-			fmt.Println("FROOOOOOOOOOOOOOOOOOOOOOOOOM EROOOOOOOOOOOOOOOOORr", ctx)
-			fmt.Println("FROOOOOOOOOOOOOOOOOOOOOOOOOM EROOOOOOOOOOOOOOOOORr", err)
 			code := fiber.StatusInternalServerError
 
 			// Retreive the custom statuscode if it's an fiber.*Error
@@ -34,22 +32,23 @@ func SetUp() {
 				"meta": fiber.Map{
 					"Version": "1.0",
 				},
-				"data": fiber.Map{
+				"errors": fiber.Map{
 					"code":  code,
 					"error": err.Error(),
 				},
 			}
-			// Send custom error page
-			// err = ctx.Status(code).SendFile(fmt.Sprintf("./%d.html", code))
-			// if err != nil {
-			// In case the SendFile fails
-			return ctx.Status(code).JSON(errorFormate)
-			// }
+			// if code >= 500 {
+			// 	errorFormate["errors"] = fiber.Map{
+			// 		"code":  code,
+			// 		"error": "Internal Server Error",
+			// 	}
 
-			// Return from handler
-			return nil
+			// }
+			return ctx.Status(code).JSON(errorFormate)
 		},
 	})
+
+	app.Use(cors.New())
 	api := app.Group("/api")
 	// connect to DB
 	DB := database.ConnectToDB()

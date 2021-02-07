@@ -3,6 +3,7 @@ package permissions
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"userManagementApi/app/validation"
 
 	"github.com/gofiber/fiber/v2"
@@ -20,9 +21,23 @@ func NewPermissionController(permService *PermissionService) *PermissionControll
 
 func (permCont *PermissionController) Get(c *fiber.Ctx) error {
 	fmt.Println("from get")
-	prems := permCont.permService.GetAllPermissions()
-	fmt.Println(prems)
-	return c.SendString("Hello, from get permissions!")
+	perms, err := permCont.permService.GetAllPermissions()
+	fmt.Println(perms)
+	if err != nil {
+		return err
+	}
+	return c.JSON(perms)
+}
+
+func (permCont *PermissionController) Delete(c *fiber.Ctx) error {
+	var err error
+	var id int
+	id, err = strconv.Atoi(c.Params("id"))
+	err = permCont.permService.DeletePermission(id)
+	if err != nil {
+		return err
+	}
+	return c.SendString("Hello, from delete permissions!")
 }
 
 func (permCont *PermissionController) Create(c *fiber.Ctx) error {
@@ -33,11 +48,14 @@ func (permCont *PermissionController) Create(c *fiber.Ctx) error {
 
 	errors := validation.ValidateStruct(*permission)
 	if errors != nil {
-		return c.JSON(errors)
+		return c.Status(http.StatusBadRequest).JSON(errors)
 	}
 	fmt.Println(permission)
 
-	permCont.permService.CreatePermission(permission)
+	err := permCont.permService.CreatePermission(permission)
+	if err != nil {
+		return err
+	}
 	return c.Status(http.StatusCreated).Send([]byte("Permission Created Successfully"))
 }
 
@@ -48,8 +66,11 @@ func (permCont *PermissionController) Update(c *fiber.Ctx) error {
 	}
 	errors := validation.ValidateStruct(*permission)
 	if errors != nil {
-		return c.JSON(errors)
+		return c.Status(http.StatusBadRequest).JSON(errors)
 	}
-	permCont.permService.UpdatePermission(permission)
+	err := permCont.permService.UpdatePermission(permission)
+	if err != nil {
+		return err
+	}
 	return c.SendString("Updated!")
 }

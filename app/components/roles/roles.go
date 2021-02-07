@@ -22,9 +22,9 @@ func NewRole(api fiber.Router, DB *gorm.DB) {
 func SetUpPermissionsRoutes(api fiber.Router, roleCtrl *RoleContoller) {
 
 	api.Get("/roles", roleCtrl.Get)
-
+	api.Get("/roles/:id", roleCtrl.GetByID)
 	api.Post("/roles", roleCtrl.Create)
-
 	api.Put("/roles", roleCtrl.Update)
+	api.Delete("/roles/:id", roleCtrl.Update)
 
 }
