@@ -3,7 +3,7 @@ package roles
 import (
 	"fmt"
 	"net/http"
-	error_handler "userManagementApi/app/error_handler"
+	"userManagementApi/app/responses"
 )
 
 type RoleService struct {
@@ -17,7 +17,7 @@ func NewRoleService(roleRepo *RoleRepo) *RoleService {
 }
 
 // add role
-func (roleServ *RoleService) Add(role RoleCreateDTO) (Roles, error) {
+func (roleServ *RoleService) Add(role RoleCreateDTO) (Roles, responses.ErrorData) {
 	var err error
 	var id int
 	r := Roles{
@@ -28,20 +28,20 @@ func (roleServ *RoleService) Add(role RoleCreateDTO) (Roles, error) {
 	id, err = roleServ.roleRepo.Add(r)
 	fmt.Println("add service", id)
 	if err != nil {
-		return Roles{}, error_handler.HandleError(http.StatusInternalServerError, err.Error())
+		return Roles{}, responses.HandleError(http.StatusInternalServerError, err.Error())
 	}
 	//check permission length
 	if len(role.Permissions) != 0 {
 		_, err = roleServ.roleRepo.Assign(id, role.Permissions)
 	}
 	if err != nil {
-		return Roles{}, error_handler.HandleError(http.StatusInternalServerError, err.Error())
+		return Roles{}, responses.HandleError(http.StatusInternalServerError, err.Error())
 	}
-	return r, nil
+	return r, responses.ErrorData{}
 }
 
 // update role
-func (roleServ *RoleService) Update(role RoleUpdateDTO) (Roles, error) {
+func (roleServ *RoleService) Update(role RoleUpdateDTO) (Roles, responses.ErrorData) {
 	var err error
 
 	//check unassign array
@@ -50,7 +50,7 @@ func (roleServ *RoleService) Update(role RoleUpdateDTO) (Roles, error) {
 		_, err = roleServ.roleRepo.UnAssign(role.ID, role.UnAssign)
 	}
 	if err != nil {
-		return Roles{}, error_handler.HandleError(http.StatusInternalServerError, err.Error())
+		return Roles{}, responses.HandleError(http.StatusInternalServerError, err.Error())
 	}
 	//check assign array
 	if len(role.NewAssign) != 0 {
@@ -58,7 +58,7 @@ func (roleServ *RoleService) Update(role RoleUpdateDTO) (Roles, error) {
 		_, err = roleServ.roleRepo.Assign(role.ID, role.NewAssign)
 	}
 	if err != nil {
-		return Roles{}, error_handler.HandleError(http.StatusInternalServerError, err.Error())
+		return Roles{}, responses.HandleError(http.StatusInternalServerError, err.Error())
 	}
 	// do update role attributes
 	var r Roles = Roles{
@@ -68,35 +68,35 @@ func (roleServ *RoleService) Update(role RoleUpdateDTO) (Roles, error) {
 	}
 	r, err = roleServ.roleRepo.Update(r)
 	if err != nil {
-		return Roles{}, error_handler.HandleError(http.StatusInternalServerError, err.Error())
+		return Roles{}, responses.HandleError(http.StatusInternalServerError, err.Error())
 	}
-	return r, nil
+	return r, responses.ErrorData{}
 }
 
 // DeleteRole delete role
-func (roleServ *RoleService) DeleteRole(roleID int) error {
+func (roleServ *RoleService) DeleteRole(roleID int) responses.ErrorData {
 	err := roleServ.roleRepo.Delete(roleID)
 	if err != nil {
-		return error_handler.HandleError(http.StatusInternalServerError, err.Error())
+		return responses.HandleError(http.StatusInternalServerError, err.Error())
 	}
-	return nil
+	return responses.ErrorData{}
 }
 
 // Get get all roles
-func (roleServ *RoleService) Get(organizationID int) ([]Roles, error) {
+func (roleServ *RoleService) Get(organizationID int) ([]Roles, responses.ErrorData) {
 	roles, err := roleServ.roleRepo.Get(organizationID)
 	if err != nil {
-		return []Roles{}, error_handler.HandleError(http.StatusInternalServerError, err.Error())
+		return []Roles{}, responses.HandleError(http.StatusInternalServerError, err.Error())
 	}
-	return roles, nil
+	return roles, responses.ErrorData{}
 }
 
 // get role by id
-func (roleServ *RoleService) GetRoleByID(roleID int) (SingleRole, error) {
+func (roleServ *RoleService) GetRoleByID(roleID int) (SingleRole, responses.ErrorData) {
 	// var roleDetails RoleDetails
 	roles, err := roleServ.roleRepo.GetByID(roleID)
 	if len(roles) < 1 {
-		return SingleRole{}, nil
+		return SingleRole{}, responses.ErrorData{}
 	}
 	var roleDetails = SingleRole{
 		ID:          roles[0].ID,
@@ -108,7 +108,7 @@ func (roleServ *RoleService) GetRoleByID(roleID int) (SingleRole, error) {
 	}
 	fmt.Println(roleDetails)
 	if err != nil {
-		return SingleRole{}, error_handler.HandleError(http.StatusInternalServerError, err.Error())
+		return SingleRole{}, responses.HandleError(http.StatusInternalServerError, err.Error())
 	}
-	return roleDetails, nil
+	return roleDetails, responses.ErrorData{}
 }

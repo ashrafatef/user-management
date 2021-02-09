@@ -8,24 +8,24 @@ import (
 type User struct {
 }
 
-func NewRole(api fiber.Route, DB *gorm.DB) {
+func NewUser(api fiber.Router, DB *gorm.DB) {
 
-	// roleRepo := NewRoleRepo(DB)
+	roleRepo := NewUserRepo(DB)
 
-	// roleService := NewRoleService(roleRepo)
+	roleService := NewUserService(roleRepo)
 
-	// roleCtrl := NewRoleController(roleService)
+	roleCtrl := NewUserController(roleService)
 
-	// SetUpRolesRoutes(api, roleCtrl)
+	SetUpUsersRoutes(api, roleCtrl)
 }
 
 // SetUpRolesRoutes set routes
-func SetUpRolesRoutes(api fiber.Router, roleCtrl *UserController) {
+func SetUpUsersRoutes(api fiber.Router, userCtrl *UserController) {
 
-	// 	api.Get("/roles", roleCtrl.Get)
-	// 	api.Get("/roles/:id", roleCtrl.GetByID)
-	// 	api.Post("/roles", roleCtrl.Create)
-	// 	api.Put("/roles", roleCtrl.Update)
-	// 	api.Delete("/roles/:id", roleCtrl.Update)
+	api.Get("/users", userCtrl.Get)
+	api.Get("/users/:id", userCtrl.GetByID)
+	api.Post("/users", userCtrl.Create)
+	api.Put("/users", userCtrl.Update)
+	api.Delete("/users/:id", userCtrl.Delete)
 
 }

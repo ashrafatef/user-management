@@ -3,8 +3,7 @@ package app
 import (
 	"fmt"
 	"log"
-	"userManagementApi/app/components/permissions"
-	"userManagementApi/app/components/roles"
+	"userManagementApi/app/components/users"
 	"userManagementApi/app/database"
 
 	"github.com/gofiber/fiber/v2"
@@ -37,13 +36,6 @@ func SetUp() {
 					"error": err.Error(),
 				},
 			}
-			// if code >= 500 {
-			// 	errorFormate["errors"] = fiber.Map{
-			// 		"code":  code,
-			// 		"error": "Internal Server Error",
-			// 	}
-
-			// }
 			return ctx.Status(code).JSON(errorFormate)
 		},
 	})
@@ -58,8 +50,10 @@ func SetUp() {
 }
 
 func loadComponents(api fiber.Router, DB *gorm.DB) {
-	permissions.NewPermission(api, DB)
-	roles.NewRole(api, DB)
+
+	// permissions.NewPermission(api, DB)
+	// roles.NewRole(api, DB)
+	users.NewUser(api, DB)
 }
 
 func loadEnv() {

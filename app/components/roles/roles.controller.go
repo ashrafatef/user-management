@@ -1,9 +1,9 @@
 package roles
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
+	"userManagementApi/app/responses"
 	"userManagementApi/app/validation"
 
 	"github.com/gofiber/fiber/v2"
@@ -20,35 +20,33 @@ func NewRoleController(roleService *RoleService) *RoleContoller {
 }
 
 func (roleCtrl *RoleContoller) Get(c *fiber.Ctx) error {
-	var err error
-	var id int
-	id, err = strconv.Atoi(c.Query("org"))
-	roles, err := roleCtrl.roleService.Get(id)
-	fmt.Println(roles)
-	if err != nil {
-		return err
+
+	id, _ := strconv.Atoi(c.Query("org"))
+	roles, Err := roleCtrl.roleService.Get(id)
+	if Err.Errors != nil {
+		return responses.SendError(c, Err)
 	}
-	return c.JSON(roles)
+	return responses.Success(c, http.StatusOK, roles)
 }
 
 func (roleCtrl *RoleContoller) GetByID(c *fiber.Ctx) error {
-	var err error
-	var id int
-	id, err = strconv.Atoi(c.Params("id"))
-	role, err := roleCtrl.roleService.GetRoleByID(id)
-	if err != nil {
-		return err
+	// var err error
+	// var id int
+	id, _ := strconv.Atoi(c.Params("id"))
+	role, Err := roleCtrl.roleService.GetRoleByID(id)
+	if Err.Errors != nil {
+		return responses.SendError(c, Err)
 	}
-	return c.JSON(role)
+	return responses.Success(c, http.StatusOK, role)
 }
 
 func (roleCtrl *RoleContoller) Delete(c *fiber.Ctx) error {
-	var err error
-	var id int
-	id, err = strconv.Atoi(c.Params("id"))
-	err = roleCtrl.roleService.DeleteRole(id)
-	if err != nil {
-		return err
+	// var err error
+	// var id int
+	id, _ := strconv.Atoi(c.Params("id"))
+	Err := roleCtrl.roleService.DeleteRole(id)
+	if Err.Errors != nil {
+		return responses.SendError(c, Err)
 	}
 	return c.SendString("Hello, from get roles!")
 }
@@ -63,15 +61,12 @@ func (roleCtrl *RoleContoller) Update(c *fiber.Ctx) error {
 			"message": err.Error(),
 		})
 	}
-
-	errors := validation.ValidateStruct(*role)
-
-	if errors != nil {
-		return c.Status(http.StatusBadRequest).JSON(errors)
+	if errors := validation.ValidateStruct(*role); errors.Errors != nil {
+		return responses.SendError(c, errors)
 	}
-	_, err = roleCtrl.roleService.Update(*role)
-	if err != nil {
-		return err
+	_, Err := roleCtrl.roleService.Update(*role)
+	if Err.Errors != nil {
+		return responses.SendError(c, Err)
 	}
 	return c.SendString("Hello, from update roles!")
 
@@ -85,14 +80,14 @@ func (roleCtrl *RoleContoller) Create(c *fiber.Ctx) error {
 			"message": err.Error(),
 		})
 	}
-	errors := validation.ValidateStruct(*role)
 
-	if errors != nil {
-		return c.Status(http.StatusBadRequest).JSON(errors)
+	if errors := validation.ValidateStruct(*role); errors.Errors != nil {
+		return responses.SendError(c, errors)
 	}
-	_, err := roleCtrl.roleService.Add(*role)
-	if err != nil {
-		return err
+
+	_, Err := roleCtrl.roleService.Add(*role)
+	if Err.Errors != nil {
+		return responses.SendError(c, Err)
 	}
 	return c.SendString("Hello, from create roles!")
 }
