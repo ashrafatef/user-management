@@ -17,31 +17,31 @@ func NewRoleService(roleRepo *RoleRepo) *RoleService {
 }
 
 // add role
-func (roleServ *RoleService) Add(role RoleCreateDTO) (Roles, responses.ErrorData) {
+func (roleServ *RoleService) Add(role RoleCreateDTO) (Organizations_Roles, responses.ErrorData) {
 	var err error
-	var id int
-	r := Roles{
+	var addedRole Organizations_Roles
+	formattedRole := Organizations_Roles{
 		Name:           role.Name,
 		OrganizationID: role.OrganizationID,
 		Description:    role.Description,
 	}
-	id, err = roleServ.roleRepo.Add(r)
-	fmt.Println("add service", id)
+
+	addedRole, err = roleServ.roleRepo.Add(formattedRole)
 	if err != nil {
-		return Roles{}, responses.HandleError(http.StatusInternalServerError, err.Error())
+		return Organizations_Roles{}, responses.HandleError(http.StatusInternalServerError, err.Error())
 	}
 	//check permission length
 	if len(role.Permissions) != 0 {
-		_, err = roleServ.roleRepo.Assign(id, role.Permissions)
+		_, err = roleServ.roleRepo.Assign(addedRole.ID, role.Permissions)
 	}
 	if err != nil {
-		return Roles{}, responses.HandleError(http.StatusInternalServerError, err.Error())
+		return Organizations_Roles{}, responses.HandleError(http.StatusInternalServerError, err.Error())
 	}
-	return r, responses.ErrorData{}
+	return addedRole, responses.ErrorData{}
 }
 
 // update role
-func (roleServ *RoleService) Update(role RoleUpdateDTO) (Roles, responses.ErrorData) {
+func (roleServ *RoleService) Update(role RoleUpdateDTO) (Organizations_Roles, responses.ErrorData) {
 	var err error
 
 	//check unassign array
@@ -50,7 +50,7 @@ func (roleServ *RoleService) Update(role RoleUpdateDTO) (Roles, responses.ErrorD
 		_, err = roleServ.roleRepo.UnAssign(role.ID, role.UnAssign)
 	}
 	if err != nil {
-		return Roles{}, responses.HandleError(http.StatusInternalServerError, err.Error())
+		return Organizations_Roles{}, responses.HandleError(http.StatusInternalServerError, err.Error())
 	}
 	//check assign array
 	if len(role.NewAssign) != 0 {
@@ -58,17 +58,17 @@ func (roleServ *RoleService) Update(role RoleUpdateDTO) (Roles, responses.ErrorD
 		_, err = roleServ.roleRepo.Assign(role.ID, role.NewAssign)
 	}
 	if err != nil {
-		return Roles{}, responses.HandleError(http.StatusInternalServerError, err.Error())
+		return Organizations_Roles{}, responses.HandleError(http.StatusInternalServerError, err.Error())
 	}
 	// do update role attributes
-	var r Roles = Roles{
+	var r Organizations_Roles = Organizations_Roles{
 		Name:        role.Name,
 		Description: role.Description,
 		ID:          role.ID,
 	}
 	r, err = roleServ.roleRepo.Update(r)
 	if err != nil {
-		return Roles{}, responses.HandleError(http.StatusInternalServerError, err.Error())
+		return Organizations_Roles{}, responses.HandleError(http.StatusInternalServerError, err.Error())
 	}
 	return r, responses.ErrorData{}
 }
@@ -83,10 +83,10 @@ func (roleServ *RoleService) DeleteRole(roleID int) responses.ErrorData {
 }
 
 // Get get all roles
-func (roleServ *RoleService) Get(organizationID int) ([]Roles, responses.ErrorData) {
+func (roleServ *RoleService) Get(organizationID int) ([]Organizations_Roles, responses.ErrorData) {
 	roles, err := roleServ.roleRepo.Get(organizationID)
 	if err != nil {
-		return []Roles{}, responses.HandleError(http.StatusInternalServerError, err.Error())
+		return []Organizations_Roles{}, responses.HandleError(http.StatusInternalServerError, err.Error())
 	}
 	return roles, responses.ErrorData{}
 }

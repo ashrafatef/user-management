@@ -2,7 +2,6 @@ package roles
 
 import (
 	"fmt"
-	"log"
 
 	"gorm.io/gorm"
 )
@@ -13,11 +12,11 @@ type RoleRepo struct {
 
 // RoleRepoInterface role repo interface
 type RoleRepoInterface interface {
-	Add(role Roles) Roles
-	Get() []Roles
-	GetByID(id int) Roles
-	Update(role Roles) Roles
-	Delete(id int) Roles
+	Add(role Organizations_Roles) Organizations_Roles
+	Get() []Organizations_Roles
+	GetByID(id int) Organizations_Roles
+	Update(role Organizations_Roles) Organizations_Roles
+	Delete(id int) Organizations_Roles
 	Assign(roleID int, permissions []int) bool
 	UnAssign(roleID int, permissions []int) bool
 }
@@ -29,24 +28,21 @@ func NewRoleRepo(db *gorm.DB) *RoleRepo {
 }
 
 // Add add role
-func (roleRepo *RoleRepo) Add(role Roles) (int, error) {
-	log.Println("adding user")
-	var id int
-	res := roleRepo.db.Raw("INSERT INTO organization_roles (name, description, organization_id) VALUES (?, ?, ?) returning id", role.Name, role.Description, role.OrganizationID).Scan(&id)
-	fmt.Println("add", id)
-	fmt.Println("add", res.Error)
+func (roleRepo *RoleRepo) Add(role Organizations_Roles) (Organizations_Roles, error) {
+	res := roleRepo.db.Create(&role)
+	// res := roleRepo.db.Raw("INSERT INTO organization_roles (name, description, organization_id) VALUES (?, ?, ?) returning id", role.Name, role.Description, role.OrganizationID).Scan(&id)
 	if res.Error != nil {
-		return 0, res.Error
+		return Organizations_Roles{}, res.Error
 	}
-	return id, nil
+	return role, nil
 }
 
 // Get get all roles
-func (repoRole *RoleRepo) Get(organizationID int) ([]Roles, error) {
-	var roles []Roles
+func (repoRole *RoleRepo) Get(organizationID int) ([]Organizations_Roles, error) {
+	var roles []Organizations_Roles
 	res := repoRole.db.Raw("SELECT * FROM organization_roles WHERE organization_id=?", organizationID).Scan(&roles)
 	if res.Error != nil {
-		return []Roles{}, res.Error
+		return []Organizations_Roles{}, res.Error
 	}
 	return roles, nil
 }
@@ -66,12 +62,13 @@ func (repoRole *RoleRepo) GetByID(id int) ([]RoleDetails, error) {
 }
 
 // Update update a role
-func (roleRepo *RoleRepo) Update(role Roles) (Roles, error) {
+func (roleRepo *RoleRepo) Update(role Organizations_Roles) (Organizations_Roles, error) {
 	// res := roleRepo.db.Save(&role)
-	res := roleRepo.db.Raw("UPDATE organization_roles SET name=?, description=? WHERE id=?", role.Name, role.Description, role.ID).Scan(&role)
+	res := roleRepo.db.Save(&role)
+	// res := roleRepo.db.Raw("UPDATE organization_roles SET name=?, description=? WHERE id=?", role.Name, role.Description, role.ID).Scan(&role)
 	fmt.Println(role)
 	if res.Error != nil {
-		return Roles{}, res.Error
+		return Organizations_Roles{}, res.Error
 	}
 	return role, nil
 }
@@ -79,7 +76,10 @@ func (roleRepo *RoleRepo) Update(role Roles) (Roles, error) {
 // Delete role
 func (roleRepo *RoleRepo) Delete(roleID int) error {
 
-	res := roleRepo.db.Raw("DELETE FROM organization_roles WHERE id=?", roleID)
+	res := roleRepo.db.Delete(Organizations_Roles{
+		ID: roleID,
+	})
+	// res := roleRepo.db.Raw("DELETE FROM organization_roles WHERE id=?", roleID)
 	if res.Error != nil {
 		return res.Error
 	}

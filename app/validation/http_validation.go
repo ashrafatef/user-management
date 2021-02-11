@@ -26,6 +26,9 @@ func ValidateStruct(entity interface{}) responses.ErrorData {
 			errors = append(errors, &element)
 		}
 	}
+	if len(errors) < 1 {
+		return responses.ErrorData{}
+	}
 	formattedError := responses.HandleError(http.StatusBadRequest, errors)
 	return formattedError
 }

@@ -1,10 +1,9 @@
 package permissions
 
-
 type PermissionsCreateDTO struct {
-	Name       string `json: "name" validate:"required"`
-	CategoryID int    `json:"category_id" validate:"required,oneof=1 2 3 4 5"`
-	Type       string `json:"type" validate:"required,oneof=create read update delete"`
+	Name     string `json: "name" validate:"required"`
+	Category string `json:"category" validate:"required,oneof=builder nlp wordspotting insights settings"`
+	Type     string `json:"type" validate:"required,oneof=create read update delete"`
 }
 
 type PermissionsUpdateDTO struct {

@@ -3,6 +3,8 @@ package app
 import (
 	"fmt"
 	"log"
+	"userManagementApi/app/components/permissions"
+	"userManagementApi/app/components/roles"
 	"userManagementApi/app/components/users"
 	"userManagementApi/app/database"
 
@@ -51,8 +53,8 @@ func SetUp() {
 
 func loadComponents(api fiber.Router, DB *gorm.DB) {
 
-	// permissions.NewPermission(api, DB)
-	// roles.NewRole(api, DB)
+	permissions.NewPermission(api, DB)
+	roles.NewRole(api, DB)
 	users.NewUser(api, DB)
 }
 

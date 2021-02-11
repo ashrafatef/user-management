@@ -61,11 +61,11 @@ func (userCtrl *UserController) Update(c *fiber.Ctx) error {
 		return responses.SendError(c, errors)
 
 	}
-	_, Err := userCtrl.userService.Update(*user)
+	updatedUser, Err := userCtrl.userService.Update(*user)
 	if Err.Errors != nil {
 		return responses.SendError(c, Err)
 	}
-	return c.SendString("Hello, from update roles!")
+	return responses.Success(c, http.StatusCreated, updatedUser)
 }
 
 func (userCtrl *UserController) Create(c *fiber.Ctx) error {
@@ -76,15 +76,15 @@ func (userCtrl *UserController) Create(c *fiber.Ctx) error {
 			"message": err.Error(),
 		})
 	}
-	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-	user.Password = string(hashedPassword)
-
 	if errors := validation.ValidateStruct(*user); errors.Errors != nil {
 		return responses.SendError(c, errors)
 	}
-	_, Err := userCtrl.userService.Add(*user)
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	user.Password = string(hashedPassword)
+
+	u, Err := userCtrl.userService.Add(*user)
 	if Err.Errors != nil {
 		return responses.SendError(c, Err)
 	}
-	return c.SendString("Hello, from create roles!")
+	return responses.Success(c, http.StatusCreated, u)
 }

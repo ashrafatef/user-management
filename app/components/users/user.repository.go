@@ -2,7 +2,6 @@ package users
 
 import (
 	"fmt"
-	"log"
 
 	"gorm.io/gorm"
 )
@@ -17,17 +16,12 @@ func NewUserRepo(db *gorm.DB) *UserRepo {
 	}
 }
 
-func (userRepo *UserRepo) Add(user *Organizations_Users) (int, error) {
-	log.Println("adding user")
-	var id int
+func (userRepo *UserRepo) Add(user *Organizations_Users) (Organizations_Users, error) {
 	res := userRepo.db.Create(&user)
-	// res := roleRepo.db.Raw("INSERT INTO organization_roles (name, description, organization_id) VALUES (?, ?, ?) returning id", role.Name, role.Description, role.OrganizationID).Scan(&id)
-	fmt.Println("add", id)
-	// fmt.Println("add", res.)
 	if res.Error != nil {
-		return 0, res.Error
+		return Organizations_Users{}, res.Error
 	}
-	return id, nil
+	return *user, nil
 }
 
 func (userRole *UserRepo) Get(organizationID int) ([]Organizations_Users, error) {

@@ -1,7 +1,6 @@
 package users
 
 import (
-	"fmt"
 	"net/http"
 	"userManagementApi/app/responses"
 )
@@ -44,8 +43,8 @@ func (userService *UserService) Delete(userID int) responses.ErrorData {
 
 // add role
 func (userService *UserService) Add(user UserCreateDTO) (Organizations_Users, responses.ErrorData) {
-	var err error
-	var id int
+	// var err error
+	// var id int
 	u := Organizations_Users{
 		FirstName:       user.FirstName,
 		LastName:        user.LastName,
@@ -55,8 +54,7 @@ func (userService *UserService) Add(user UserCreateDTO) (Organizations_Users, re
 		OrganizationsID: user.OrganizationID,
 		RoleID:          user.RoleID,
 	}
-	id, err = userService.userRepo.Add(&u)
-	fmt.Println("add service", id)
+	u, err := userService.userRepo.Add(&u)
 	if err != nil {
 		return Organizations_Users{}, responses.HandleError(http.StatusInternalServerError, err.Error())
 	}

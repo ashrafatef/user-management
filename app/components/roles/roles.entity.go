@@ -2,7 +2,7 @@ package roles
 
 import "time"
 
-type Roles struct {
+type Organizations_Roles struct {
 	ID             int       `json:"id" gorm:"primary_key"`
 	Name           string    `json:"name"`
 	OrganizationID int       `json:"organization_id"`
