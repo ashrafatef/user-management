@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"log"
+	"os"
 	"userManagementApi/app/components/permissions"
 	"userManagementApi/app/components/roles"
 	"userManagementApi/app/components/users"
@@ -48,7 +49,8 @@ func SetUp() {
 	DB := database.ConnectToDB()
 	// load components
 	loadComponents(api, DB)
-	log.Fatal(app.Listen(":3000"))
+	var port string = ":" + os.Getenv("PORT")
+	log.Fatal(app.Listen(port))
 }
 
 func loadComponents(api fiber.Router, DB *gorm.DB) {
