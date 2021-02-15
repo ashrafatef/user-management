@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"userManagementApi/app/components/bots"
 	"userManagementApi/app/components/permissions"
 	"userManagementApi/app/components/roles"
 	"userManagementApi/app/components/users"
@@ -49,15 +50,14 @@ func SetUp() {
 	DB := database.ConnectToDB()
 	// load components
 	loadComponents(api, DB)
-	var port string = ":" + os.Getenv("PORT")
-	log.Fatal(app.Listen(port))
+	log.Fatal(app.Listen(os.Getenv("PORT")))
 }
 
 func loadComponents(api fiber.Router, DB *gorm.DB) {
-
 	permissions.NewPermission(api, DB)
 	roles.NewRole(api, DB)
 	users.NewUser(api, DB)
+	bots.NewBot(api, DB)
 }
 
 func loadEnv() {

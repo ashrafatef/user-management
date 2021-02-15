@@ -30,7 +30,6 @@ func NewRoleRepo(db *gorm.DB) *RoleRepo {
 // Add add role
 func (roleRepo *RoleRepo) Add(role Organizations_Roles) (Organizations_Roles, error) {
 	res := roleRepo.db.Create(&role)
-	// res := roleRepo.db.Raw("INSERT INTO organization_roles (name, description, organization_id) VALUES (?, ?, ?) returning id", role.Name, role.Description, role.OrganizationID).Scan(&id)
 	if res.Error != nil {
 		return Organizations_Roles{}, res.Error
 	}
@@ -63,9 +62,7 @@ func (repoRole *RoleRepo) GetByID(id int) ([]RoleDetails, error) {
 
 // Update update a role
 func (roleRepo *RoleRepo) Update(role Organizations_Roles) (Organizations_Roles, error) {
-	// res := roleRepo.db.Save(&role)
 	res := roleRepo.db.Save(&role)
-	// res := roleRepo.db.Raw("UPDATE organization_roles SET name=?, description=? WHERE id=?", role.Name, role.Description, role.ID).Scan(&role)
 	fmt.Println(role)
 	if res.Error != nil {
 		return Organizations_Roles{}, res.Error
@@ -75,11 +72,9 @@ func (roleRepo *RoleRepo) Update(role Organizations_Roles) (Organizations_Roles,
 
 // Delete role
 func (roleRepo *RoleRepo) Delete(roleID int) error {
-
 	res := roleRepo.db.Delete(Organizations_Roles{
 		ID: roleID,
 	})
-	// res := roleRepo.db.Raw("DELETE FROM organization_roles WHERE id=?", roleID)
 	if res.Error != nil {
 		return res.Error
 	}
