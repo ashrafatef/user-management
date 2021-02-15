@@ -16,7 +16,6 @@ func NewPermissionService(permRepo *PermissionRepo) *PermissionService {
 }
 
 func (permServ *PermissionService) CreatePermission(permission *PermissionsCreateDTO) responses.ErrorData {
-	// CreatePermissionRepo(permission)
 	perm := Permissions{
 		Category: permission.Category,
 		Type:     permission.Type,

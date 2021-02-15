@@ -43,24 +43,18 @@ func (roleServ *RoleService) Add(role RoleCreateDTO) (Organizations_Roles, respo
 // update role
 func (roleServ *RoleService) Update(role RoleUpdateDTO) (Organizations_Roles, responses.ErrorData) {
 	var err error
-
-	//check unassign array
 	if len(role.UnAssign) != 0 {
-		// do un assign
 		_, err = roleServ.roleRepo.UnAssign(role.ID, role.UnAssign)
 	}
 	if err != nil {
 		return Organizations_Roles{}, responses.HandleError(http.StatusInternalServerError, err.Error())
 	}
-	//check assign array
 	if len(role.NewAssign) != 0 {
-		//do new assign
 		_, err = roleServ.roleRepo.Assign(role.ID, role.NewAssign)
 	}
 	if err != nil {
 		return Organizations_Roles{}, responses.HandleError(http.StatusInternalServerError, err.Error())
 	}
-	// do update role attributes
 	var r Organizations_Roles = Organizations_Roles{
 		Name:        role.Name,
 		Description: role.Description,
