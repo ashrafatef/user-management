@@ -32,6 +32,17 @@ func (userService *UserService) GetUserByID(userID int) (Organizations_Users, re
 	return user, responses.ErrorData{}
 }
 
+func (userService *UserService) IsRoleAssignedToUser(roleID int) (bool, responses.ErrorData) {
+	user, err := userService.userRepo.GetFirstByRole(roleID)
+	if err != nil {
+		return false, responses.HandleError(http.StatusInternalServerError, err.Error())
+	}
+	if user.ID != 0 {
+		return true, responses.ErrorData{}
+	}
+	return false, responses.ErrorData{}
+}
+
 // DeleteRole delete role
 func (userService *UserService) Delete(userID int) responses.ErrorData {
 	err := userService.userRepo.Delete(userID)

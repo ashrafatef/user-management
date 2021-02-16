@@ -33,6 +33,15 @@ func (userRole *UserRepo) Get(organizationID int) ([]Organizations_Users, error)
 	return users, nil
 }
 
+func (userRole *UserRepo) GetFirstByRole(roleID int) (Organizations_Users, error) {
+	var user Organizations_Users
+	res := userRole.db.First(&user, "role_id=?", roleID)
+	if res.Error != nil {
+		return Organizations_Users{}, res.Error
+	}
+	return user, nil
+}
+
 func (userRole *UserRepo) GetByID(id int) (Organizations_Users, error) {
 	var user Organizations_Users
 	userToDelete := Organizations_Users{

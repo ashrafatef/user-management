@@ -2,7 +2,7 @@ package roles
 
 type RoleCreateDTO struct {
 	Name           string `json:"name" validate:"required,min=3"`
-	Description    string `json:"description" validate:"required"`
+	Description    string `json:"description" validate:""`
 	Permissions    []int  `json:"permissions" validate:"required,min=1"`
 	OrganizationID int    `json:"organization_id" validate:"required"`
 }
