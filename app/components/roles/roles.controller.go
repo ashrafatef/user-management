@@ -30,8 +30,6 @@ func (roleCtrl *RoleContoller) Get(c *fiber.Ctx) error {
 }
 
 func (roleCtrl *RoleContoller) GetByID(c *fiber.Ctx) error {
-	// var err error
-	// var id int
 	id, _ := strconv.Atoi(c.Params("id"))
 	role, Err := roleCtrl.roleService.GetRoleByID(id)
 	if Err.Errors != nil {
@@ -85,9 +83,9 @@ func (roleCtrl *RoleContoller) Create(c *fiber.Ctx) error {
 		return responses.SendError(c, errors)
 	}
 
-	_, Err := roleCtrl.roleService.Add(*role)
+	r, Err := roleCtrl.roleService.Add(*role)
 	if Err.Errors != nil {
 		return responses.SendError(c, Err)
 	}
-	return c.SendString("Hello, from create roles!")
+	return responses.Success(c, http.StatusCreated, r)
 }

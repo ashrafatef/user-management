@@ -6,17 +6,20 @@ import (
 )
 
 type Role struct {
+	roleRepo      *RoleRepo
+	roleService   *RoleService
+	roleContoller *RoleContoller
 }
 
-func NewRole(api fiber.Router, DB *gorm.DB) {
+func (role *Role) NewRole(api fiber.Router, DB *gorm.DB) {
 
-	roleRepo := NewRoleRepo(DB)
+	role.roleRepo = NewRoleRepo(DB)
 
-	roleService := NewRoleService(roleRepo)
+	role.roleService = NewRoleService(role.roleRepo)
 
-	roleCtrl := NewRoleController(roleService)
+	role.roleContoller = NewRoleController(role.roleService)
 
-	SetUpRolesRoutes(api, roleCtrl)
+	SetUpRolesRoutes(api, role.roleContoller)
 }
 
 // SetUpRolesRoutes set routes

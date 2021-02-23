@@ -3,6 +3,7 @@ package bots
 import (
 	"net/http"
 	"userManagementApi/app/responses"
+	"userManagementApi/app/utilities"
 )
 
 type BotService struct {
@@ -16,9 +17,11 @@ func NewBotService(botRepo *BotRepo) *BotService {
 }
 
 func (botServ *BotService) Add(bot BotsCreateDTO) (Bots, responses.ErrorData) {
+	botID := utilities.GenerateRandomString()
 	newBot := Bots{
 		Title:           bot.Title,
 		OrganizationsID: bot.OrganizationsID,
+		BotID:           botID,
 	}
 	b, err := botServ.botRepo.Add(newBot)
 	if err != nil {

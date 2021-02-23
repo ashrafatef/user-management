@@ -6,17 +6,20 @@ import (
 )
 
 type Bot struct {
+	botRepo       *BotRepo
+	botService    *BotService
+	botController *BotController
 }
 
-func NewBot(api fiber.Router, DB *gorm.DB) {
+func (bot *Bot) NewBot(api fiber.Router, DB *gorm.DB) {
 
-	botRepo := NewBotRepo(DB)
+	bot.botRepo = NewBotRepo(DB)
 
-	botService := NewBotService(botRepo)
+	bot.botService = NewBotService(bot.botRepo)
 
-	botCtrl := NewBotController(botService)
+	bot.botController = NewBotController(bot.botService)
 
-	SetUpRolesRoutes(api, botCtrl)
+	SetUpRolesRoutes(api, bot.botController)
 }
 
 // SetUpRolesRoutes set routes

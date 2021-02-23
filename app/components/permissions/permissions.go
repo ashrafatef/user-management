@@ -6,17 +6,16 @@ import (
 )
 
 type Permission struct {
+	permissionRepo       *PermissionRepo
+	permissionService    *PermissionService
+	permissionController *PermissionController
 }
 
-func NewPermission(api fiber.Router, DB *gorm.DB) {
-	// set repo
-	permRepo := NewPermissionRepo(DB)
-	// set service
-	premService := NewPermissionService(permRepo)
-	// set controller
-	permCtrl := NewPermissionController(premService)
-	// set Routes
-	SetUpPermissionsRoutes(api, permCtrl)
+func (permission *Permission) NewPermission(api fiber.Router, DB *gorm.DB) {
+	permission.permissionRepo = NewPermissionRepo(DB)
+	permission.permissionService = NewPermissionService(permission.permissionRepo)
+	permission.permissionController = NewPermissionController(permission.permissionService)
+	SetUpPermissionsRoutes(api, permission.permissionController)
 }
 
 func SetUpPermissionsRoutes(api fiber.Router, permCtrl *PermissionController) {

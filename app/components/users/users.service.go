@@ -1,8 +1,11 @@
 package users
 
 import (
+	"errors"
 	"net/http"
 	"userManagementApi/app/responses"
+
+	"gorm.io/gorm"
 )
 
 type UserService struct {
@@ -34,13 +37,14 @@ func (userService *UserService) GetUserByID(userID int) (Organizations_Users, re
 
 func (userService *UserService) IsRoleAssignedToUser(roleID int) (bool, responses.ErrorData) {
 	user, err := userService.userRepo.GetFirstByRole(roleID)
-	if err != nil {
+	isErrorRecordNotFound := errors.Is(err, gorm.ErrRecordNotFound)
+	if isErrorRecordNotFound && user.ID == 0 {
+		return false, responses.ErrorData{}
+	}
+	if !isErrorRecordNotFound && err != nil {
 		return false, responses.HandleError(http.StatusInternalServerError, err.Error())
 	}
-	if user.ID != 0 {
-		return true, responses.ErrorData{}
-	}
-	return false, responses.ErrorData{}
+	return true, responses.ErrorData{}
 }
 
 // DeleteRole delete role

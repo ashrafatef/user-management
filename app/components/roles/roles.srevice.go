@@ -1,19 +1,22 @@
 package roles
 
 import (
-	"fmt"
 	"net/http"
+	"userManagementApi/app/components/users"
 	"userManagementApi/app/responses"
 )
 
 type RoleService struct {
-	roleRepo *RoleRepo
+	roleRepo    *RoleRepo
+	userService *users.UserService
 }
 
 func NewRoleService(roleRepo *RoleRepo) *RoleService {
-	return &RoleService{
+	// usersService := new(users.User)
+	var roleService RoleService = RoleService{
 		roleRepo: roleRepo,
 	}
+	return &roleService
 }
 
 // add role
@@ -56,9 +59,10 @@ func (roleServ *RoleService) Update(role RoleUpdateDTO) (Organization_Roles, res
 		return Organization_Roles{}, responses.HandleError(http.StatusInternalServerError, err.Error())
 	}
 	var r Organization_Roles = Organization_Roles{
-		Name:        role.Name,
-		Description: role.Description,
-		ID:          role.ID,
+		Name:           role.Name,
+		Description:    role.Description,
+		ID:             role.ID,
+		OrganizationID: role.OrganizationID,
 	}
 	r, err = roleServ.roleRepo.Update(r)
 	if err != nil {
@@ -69,6 +73,13 @@ func (roleServ *RoleService) Update(role RoleUpdateDTO) (Organization_Roles, res
 
 // DeleteRole delete role
 func (roleServ *RoleService) DeleteRole(roleID int) responses.ErrorData {
+	isRoleUsed, errors := users.Service.IsRoleAssignedToUser(roleID)
+	if errors.Errors != nil {
+		return errors
+	}
+	if isRoleUsed {
+		return responses.HandleError(http.StatusMethodNotAllowed, "Can't delete role already used")
+	}
 	err := roleServ.roleRepo.Delete(roleID)
 	if err != nil {
 		return responses.HandleError(http.StatusInternalServerError, err.Error())
@@ -89,6 +100,9 @@ func (roleServ *RoleService) Get(organizationID int) ([]Organization_Roles, resp
 func (roleServ *RoleService) GetRoleByID(roleID int) (SingleRole, responses.ErrorData) {
 	// var roleDetails RoleDetails
 	roles, err := roleServ.roleRepo.GetByID(roleID)
+	if err != nil {
+		return SingleRole{}, responses.HandleError(http.StatusInternalServerError, err.Error())
+	}
 	if len(roles) < 1 {
 		return SingleRole{}, responses.ErrorData{}
 	}
@@ -99,10 +113,6 @@ func (roleServ *RoleService) GetRoleByID(roleID int) (SingleRole, responses.Erro
 	}
 	for _, role := range roles {
 		roleDetails.Permissions = append(roleDetails.Permissions, role.PermissionID)
-	}
-	fmt.Println(roleDetails)
-	if err != nil {
-		return SingleRole{}, responses.HandleError(http.StatusInternalServerError, err.Error())
 	}
 	return roleDetails, responses.ErrorData{}
 }

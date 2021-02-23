@@ -25,6 +25,10 @@ func SendError(ctx *fiber.Ctx, err ErrorData) error {
 }
 
 func HandleError(code int, errors interface{}) ErrorData {
+	if code == 500 {
+		errors = "Internal Server Error"
+	}
+	// logging error here
 	err := ErrorData{
 		Meta:   GetResponseMeta(),
 		Errors: errors,

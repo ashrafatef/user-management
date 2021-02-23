@@ -6,17 +6,23 @@ import (
 )
 
 type User struct {
+	userRepo       *UserRepo
+	userService    *UserService
+	userController *UserController
 }
 
-func NewUser(api fiber.Router, DB *gorm.DB) {
+var Service *UserService
 
-	roleRepo := NewUserRepo(DB)
+func (user *User) NewUser(api fiber.Router, DB *gorm.DB) {
 
-	roleService := NewUserService(roleRepo)
+	user.userRepo = NewUserRepo(DB)
 
-	roleCtrl := NewUserController(roleService)
+	user.userService = NewUserService(user.userRepo)
+	Service = NewUserService(user.userRepo)
 
-	SetUpUsersRoutes(api, roleCtrl)
+	user.userController = NewUserController(Service)
+
+	SetUpUsersRoutes(api, user.userController)
 }
 
 // SetUpRolesRoutes set routes

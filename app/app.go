@@ -54,7 +54,12 @@ func SetUp() {
 }
 
 func loadComponents(api fiber.Router, DB *gorm.DB) {
-	permissions.NewPermission(api, DB)
+	permission := new(permissions.Permission)
+	roles := new(roles.Role)
+	users := new(users.User)
+	bots := new(bots.Bot)
+
+	permission.NewPermission(api, DB)
 	roles.NewRole(api, DB)
 	users.NewUser(api, DB)
 	bots.NewBot(api, DB)

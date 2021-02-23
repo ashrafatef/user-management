@@ -8,11 +8,12 @@ type RoleCreateDTO struct {
 }
 
 type RoleUpdateDTO struct {
-	ID          int    `json:"id" validate:"required"`
-	Name        string `json:"name" validate:"required"`
-	Description string `json:"description" validate:"required"`
-	NewAssign   []int  `json:"newAssign" validate:"required"`
-	UnAssign    []int  `json:"UnAssign" validate:"required"`
+	ID             int    `json:"id" validate:"required"`
+	Name           string `json:"name" validate:"required"`
+	Description    string `json:"description" validate:""`
+	NewAssign      []int  `json:"newAssign" validate:"required"`
+	UnAssign       []int  `json:"UnAssign" validate:"required"`
+	OrganizationID int    `json:"organization_id" validate:"required"`
 }
 
 type RoleDetails struct {
