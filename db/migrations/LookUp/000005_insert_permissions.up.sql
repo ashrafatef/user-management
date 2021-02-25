@@ -1,7 +1,6 @@
 TRUNCATE TABLE permissions RESTART IDENTITY CASCADE;
 
 -- Adminstration permission
-
 INSERT INTO permissions(name, type, category) VALUES ('Access Administration', 'read', 'administration');
 
 -- Bots Permissions
@@ -25,22 +24,23 @@ INSERT INTO permissions(name, type, category) VALUES ('Add Users', 'create', 'ad
 INSERT INTO permissions(name, type, category) VALUES ('Update Users', 'update', 'administration');
 INSERT INTO permissions(name, type, category) VALUES ('Delete Users', 'delete', 'administration');
 
-
+-- Builder Permissions
 INSERT INTO permissions(name, type, category) VALUES ('Access Builder', 'read', 'builder');
--- Cards Permissions
+
+-- Cards 
 INSERT INTO permissions(name, type, category) VALUES ('Add Card', 'create', 'builder');
 INSERT INTO permissions(name, type, category) VALUES ('Delete Card', 'delete', 'builder');
 INSERT INTO permissions(name, type, category) VALUES ('Update Card', 'update', 'builder');
 INSERT INTO permissions(name, type, category) VALUES ('Sort Card', 'update', 'builder');
 
--- Blocks Permissions
+-- Blocks
 INSERT INTO permissions(name, type, category) VALUES ('Access Block', 'read', 'builder');
 INSERT INTO permissions(name, type, category) VALUES ('Add Block', 'create', 'builder');
 INSERT INTO permissions(name, type, category) VALUES ('Delete Block', 'delete', 'builder');
 INSERT INTO permissions(name, type, category) VALUES ('Copy Block', 'create', 'builder');
 INSERT INTO permissions(name, type, category) VALUES ('Update Block', 'update', 'builder');
 
--- Groups Permissions
+-- Groups 
 INSERT INTO permissions(name, type, category) VALUES ('Access Group', 'read', 'builder');
 INSERT INTO permissions(name, type, category) VALUES ('List Group', 'read', 'builder');
 INSERT INTO permissions(name, type, category) VALUES ('Add Group', 'create', 'builder');
@@ -50,7 +50,7 @@ INSERT INTO permissions(name, type, category) VALUES ('Sort Groups', 'update', '
 
 
 -- NLP Permissions
-INSERT INTO permissions(name, type, category) VALUES ('Access NLP', 'read', 'nlp');
+INSERT INTO permissions(name, type, category) VALUES ('Access NLP Rules', 'read', 'nlp');
 INSERT INTO permissions(name, type, category) VALUES ('List NLP Rules', 'read', 'nlp');
 INSERT INTO permissions(name, type, category) VALUES ('Add NLP Rule', 'create', 'nlp');
 INSERT INTO permissions(name, type, category) VALUES ('Delete NLP Rule', 'delete', 'nlp');
@@ -64,13 +64,13 @@ INSERT INTO permissions(name, type, category) VALUES ('Delete Word Spotting', 'd
 
 -- Settings Permissions
 INSERT INTO permissions(name, type, category) VALUES ('Access Settings', 'read', 'settings');
-INSERT INTO permissions(name, type, category) VALUES ('Access General', 'read', 'settings');
+INSERT INTO permissions(name, type, category) VALUES ('Access General Settings', 'read', 'settings');
 INSERT INTO permissions(name, type, category) VALUES ('Update General', 'update', 'settings');
-INSERT INTO permissions(name, type, category) VALUES ('Access Channels', 'read', 'settings');
+INSERT INTO permissions(name, type, category) VALUES ('Access Channels Settings', 'read', 'settings');
 INSERT INTO permissions(name, type, category) VALUES ('Add Channel', 'create', 'settings');
 INSERT INTO permissions(name, type, category) VALUES ('Update Channel', 'update', 'settings');
 INSERT INTO permissions(name, type, category) VALUES ('Delete Channel', 'delete', 'settings');
-INSERT INTO permissions(name, type, category) VALUES ('Access NLP', 'read', 'settings');
+INSERT INTO permissions(name, type, category) VALUES ('Access NLP Settings', 'read', 'settings');
 INSERT INTO permissions(name, type, category) VALUES ('Add NLP', 'create', 'settings');
 INSERT INTO permissions(name, type, category) VALUES ('Update NLP', 'update', 'settings');
 INSERT INTO permissions(name, type, category) VALUES ('Delete NLP', 'delete', 'settings');
