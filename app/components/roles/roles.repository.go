@@ -96,9 +96,17 @@ func (roleRepo *RoleRepo) AssignPermission(roleID int, permissions []int) (bool,
 
 // UnAssign remove permissions assigning from role
 func (roleRepo *RoleRepo) UnAssignPermission(roleID int, permissions []int) (bool, error) {
+	// fmt.Print("in un assing ***************** \n")
+	// fmt.Print("in un assing ***************** \n", roleID, permissions)
+	var results interface{}
 	for _, perm := range permissions {
-		res := roleRepo.db.Raw("DELETE * FROM permissions_roles WHERE permission_id=? AND role_id=?", roleID, perm)
+		// fmt.Print("in un assing ***************** \n", perm)
+		res := roleRepo.db.Raw("DELETE FROM permissions_roles WHERE permission_id=? AND role_id=?", perm, roleID).Scan(&results)
+		// res := roleRepo.db.Table("permissions_roles").Where("permission_id=? AND role_id=?", roleID, perm).Delete(&results)
+		fmt.Print("==============>", results)
+		fmt.Print(res.RowsAffected)
 		if res.Error != nil {
+			fmt.Print("Errorrrrrrrrrrrrrrrrr ====>\n", res.Error.Error())
 			return false, res.Error
 		}
 	}

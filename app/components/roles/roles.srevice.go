@@ -1,6 +1,7 @@
 package roles
 
 import (
+	"fmt"
 	"net/http"
 	"userManagementApi/app/components/users"
 	"userManagementApi/app/responses"
@@ -46,6 +47,7 @@ func (roleServ *RoleService) Add(role RoleCreateDTO) (Organization_Roles, respon
 // update role
 func (roleServ *RoleService) Update(role RoleUpdateDTO) (Organization_Roles, responses.ErrorData) {
 	var err error
+	fmt.Print("=======>", role)
 	if len(role.UnAssign) != 0 {
 		_, err = roleServ.roleRepo.UnAssignPermission(role.ID, role.UnAssign)
 	}
