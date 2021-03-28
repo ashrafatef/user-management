@@ -58,8 +58,6 @@ func (userService *UserService) Delete(userID int) responses.ErrorData {
 
 // add role
 func (userService *UserService) Add(user UserCreateDTO) (Organizations_Users, responses.ErrorData) {
-	// var err error
-	// var id int
 	u := Organizations_Users{
 		FirstName:       user.FirstName,
 		LastName:        user.LastName,

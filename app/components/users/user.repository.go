@@ -54,7 +54,6 @@ func (userRole *UserRepo) GetByID(id int) (Organizations_Users, error) {
 
 func (userRepo *UserRepo) Update(user *Organizations_Users) (Organizations_Users, error) {
 	res := userRepo.db.Updates(&user)
-	// res := roleRepo.db.Raw("UPDATE organization_roles SET name=?, description=? WHERE id=?", role.Name, role.Description, role.ID).Scan(&role)
 	if res.Error != nil {
 		return Organizations_Users{}, res.Error
 	}
@@ -63,11 +62,9 @@ func (userRepo *UserRepo) Update(user *Organizations_Users) (Organizations_Users
 
 // Delete role
 func (userRepo *UserRepo) Delete(userID int) error {
-	// user :=
 	res := userRepo.db.Delete(Organizations_Users{
 		ID: userID,
 	})
-	// res := roleRepo.db.Raw("DELETE FROM organization_roles WHERE id=?", roleID)
 	if res.Error != nil {
 		return res.Error
 	}

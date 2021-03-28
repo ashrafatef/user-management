@@ -13,7 +13,6 @@ type RoleService struct {
 }
 
 func NewRoleService(roleRepo *RoleRepo) *RoleService {
-	// usersService := new(users.User)
 	var roleService RoleService = RoleService{
 		roleRepo: roleRepo,
 	}
@@ -100,7 +99,6 @@ func (roleServ *RoleService) Get(organizationID int) ([]Organization_Roles, resp
 
 // get role by id
 func (roleServ *RoleService) GetRoleByID(roleID int) (SingleRole, responses.ErrorData) {
-	// var roleDetails RoleDetails
 	roles, err := roleServ.roleRepo.GetByID(roleID)
 	if err != nil {
 		return SingleRole{}, responses.HandleError(http.StatusInternalServerError, err.Error())
