@@ -1,7 +1,6 @@
 package app
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"userManagementApi/app/components/bots"
@@ -26,8 +25,6 @@ func SetUp() {
 
 			// Retreive the custom statuscode if it's an fiber.*Error
 			if e, ok := err.(*fiber.Error); ok {
-				fmt.Println(e.Message)
-				fmt.Println(e.Code)
 				code = e.Code
 			}
 

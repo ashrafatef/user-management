@@ -24,7 +24,7 @@ func SetUpPermissionsRoutes(api fiber.Router, permCtrl *PermissionController) {
 
 	api.Post("/permissions", permCtrl.Create)
 
-	api.Put("/permissions", permCtrl.Update)
+	api.Put("/permissions/:id", permCtrl.Update)
 
 	api.Delete("/permissions/:id", permCtrl.Delete)
 

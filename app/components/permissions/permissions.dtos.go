@@ -8,5 +8,4 @@ type PermissionsCreateDTO struct {
 
 type PermissionsUpdateDTO struct {
 	Name string `json: "name" validate:""`
-	ID   int    `json:"id" validate:"required"`
 }

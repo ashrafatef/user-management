@@ -77,11 +77,11 @@ func (userService *UserService) Add(user UserCreateDTO) (Organizations_Users, re
 }
 
 // Update update user
-func (userService *UserService) Update(user UserUpdateDTO) (Organizations_Users, responses.ErrorData) {
+func (userService *UserService) Update(user UserUpdateDTO, id int) (Organizations_Users, responses.ErrorData) {
 	var err error
 	// do update role attributes
 	u := Organizations_Users{
-		ID:              user.ID,
+		ID:              id,
 		FirstName:       user.FirstName,
 		LastName:        user.LastName,
 		Email:           user.Email,

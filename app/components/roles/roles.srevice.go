@@ -45,17 +45,17 @@ func (roleServ *RoleService) Add(role RoleCreateDTO) (Organization_Roles, respon
 }
 
 // update role
-func (roleServ *RoleService) Update(role RoleUpdateDTO) (Organization_Roles, responses.ErrorData) {
+func (roleServ *RoleService) Update(role RoleUpdateDTO, id int) (Organization_Roles, responses.ErrorData) {
 	var err error
 	fmt.Print("=======>", role)
 	if len(role.UnAssign) != 0 {
-		_, err = roleServ.roleRepo.UnAssignPermission(role.ID, role.UnAssign)
+		_, err = roleServ.roleRepo.UnAssignPermission(id, role.UnAssign)
 	}
 	if err != nil {
 		return Organization_Roles{}, responses.HandleError(http.StatusInternalServerError, err.Error())
 	}
 	if len(role.NewAssign) != 0 {
-		_, err = roleServ.roleRepo.AssignPermission(role.ID, role.NewAssign)
+		_, err = roleServ.roleRepo.AssignPermission(id, role.NewAssign)
 	}
 	if err != nil {
 		return Organization_Roles{}, responses.HandleError(http.StatusInternalServerError, err.Error())
@@ -63,7 +63,7 @@ func (roleServ *RoleService) Update(role RoleUpdateDTO) (Organization_Roles, res
 	var r Organization_Roles = Organization_Roles{
 		Name:           role.Name,
 		Description:    role.Description,
-		ID:             role.ID,
+		ID:             id,
 		OrganizationID: role.OrganizationID,
 	}
 	r, err = roleServ.roleRepo.Update(r)

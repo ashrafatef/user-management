@@ -31,7 +31,7 @@ func SetUpUsersRoutes(api fiber.Router, userCtrl *UserController) {
 	api.Get("/users", userCtrl.Get)
 	api.Get("/users/:id", userCtrl.GetByID)
 	api.Post("/users", userCtrl.Create)
-	api.Put("/users", userCtrl.Update)
+	api.Put("/users/:id", userCtrl.Update)
 	api.Delete("/users/:id", userCtrl.Delete)
 
 }

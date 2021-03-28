@@ -54,6 +54,7 @@ func (permissionCtrl *PermissionController) Create(c *fiber.Ctx) error {
 }
 
 func (permissionCtrl *PermissionController) Update(c *fiber.Ctx) error {
+	id, _ := strconv.Atoi(c.Params("id"))
 	permission := new(PermissionsUpdateDTO)
 	if err := c.BodyParser(permission); err != nil {
 		return c.JSON(fiber.Map{"error": true, "input": "Please review your input"})
@@ -61,7 +62,7 @@ func (permissionCtrl *PermissionController) Update(c *fiber.Ctx) error {
 	if errors := validation.ValidateStruct(*permission); errors.Errors != nil {
 		return responses.SendError(c, errors)
 	}
-	Err := permissionCtrl.permService.UpdatePermission(permission)
+	Err := permissionCtrl.permService.UpdatePermission(permission, id)
 	if Err.Errors != nil {
 		return responses.SendError(c, Err)
 	}

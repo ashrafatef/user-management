@@ -1,8 +1,6 @@
 package roles
 
 import (
-	"fmt"
-
 	"gorm.io/gorm"
 )
 
@@ -63,7 +61,6 @@ func (repoRole *RoleRepo) GetByID(id int) ([]RoleDetails, error) {
 // Update update a role
 func (roleRepo *RoleRepo) Update(role Organization_Roles) (Organization_Roles, error) {
 	res := roleRepo.db.Save(&role)
-	fmt.Println(role)
 	if res.Error != nil {
 		return Organization_Roles{}, res.Error
 	}
@@ -84,7 +81,6 @@ func (roleRepo *RoleRepo) Delete(roleID int) error {
 // Assign permissions to role
 func (roleRepo *RoleRepo) AssignPermission(roleID int, permissions []int) (bool, error) {
 	var id int
-	fmt.Println("assign", roleID)
 	for _, perm := range permissions {
 		res := roleRepo.db.Raw("INSERT INTO permissions_roles (role_id, permission_id) VALUES (?, ?)", roleID, perm).Scan(&id)
 		if res.Error != nil {

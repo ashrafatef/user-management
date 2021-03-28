@@ -28,7 +28,7 @@ func SetUpRolesRoutes(api fiber.Router, roleCtrl *RoleContoller) {
 	api.Get("/roles", roleCtrl.Get)
 	api.Get("/roles/:id", roleCtrl.GetByID)
 	api.Post("/roles", roleCtrl.Create)
-	api.Put("/roles", roleCtrl.Update)
+	api.Put("/roles/:id", roleCtrl.Update)
 	api.Delete("/roles/:id", roleCtrl.Delete)
 
 }
