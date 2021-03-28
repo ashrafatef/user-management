@@ -1,8 +1,6 @@
 package users
 
 import (
-	"fmt"
-
 	"gorm.io/gorm"
 )
 
@@ -48,7 +46,6 @@ func (userRole *UserRepo) GetByID(id int) (Organizations_Users, error) {
 		ID: id,
 	}
 	res := userRole.db.Find(&user, userToDelete)
-	fmt.Println(user)
 	if res.Error != nil {
 		return Organizations_Users{}, res.Error
 	}

@@ -49,6 +49,7 @@ func (userCtrl *UserController) Delete(c *fiber.Ctx) error {
 
 func (userCtrl *UserController) Update(c *fiber.Ctx) error {
 	var err error
+	id, _ := strconv.Atoi(c.Params("id"))
 	user := new(UserUpdateDTO)
 
 	if err = c.BodyParser(user); err != nil {
@@ -61,7 +62,7 @@ func (userCtrl *UserController) Update(c *fiber.Ctx) error {
 		return responses.SendError(c, errors)
 
 	}
-	updatedUser, Err := userCtrl.userService.Update(*user)
+	updatedUser, Err := userCtrl.userService.Update(*user, id)
 	if Err.Errors != nil {
 		return responses.SendError(c, Err)
 	}

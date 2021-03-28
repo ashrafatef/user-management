@@ -1,8 +1,6 @@
 package permissions
 
 import (
-	"fmt"
-
 	"gorm.io/gorm"
 )
 
@@ -32,7 +30,6 @@ func (permRepo *PermissionRepo) GetAllPermissionsRepo() ([]Permissions, error) {
 	if res.Error != nil {
 		return []Permissions{}, res.Error
 	}
-	fmt.Println(permissions)
 	return permissions, nil
 }
 

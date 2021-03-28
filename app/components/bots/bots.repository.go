@@ -1,8 +1,6 @@
 package bots
 
 import (
-	"fmt"
-
 	"gorm.io/gorm"
 )
 
@@ -22,7 +20,6 @@ func (botRepo *BotRepo) Add(bot Bots) (Bots, error) {
 	if res.Error != nil {
 		return Bots{}, res.Error
 	}
-	fmt.Print("Start insert new bot blocks")
 	sqlStr := `INSERT INTO blocks_bots (name,slug, bot_id, payload, created_at, updated_at) VALUES ('Welcome Message','welcome-message', ?, '[{"data": {"for": 1600},"block_id": 8}]'::jsonb, current_timestamp, current_timestamp),('Default Message','default-message', ?, '[{"data": {"for": 1600},"block_id": 8}]'::jsonb, current_timestamp, current_timestamp)`
 	res = botRepo.db.Exec(sqlStr, bot.ID, bot.ID)
 	if res.Error != nil {

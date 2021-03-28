@@ -8,7 +8,6 @@ type RoleCreateDTO struct {
 }
 
 type RoleUpdateDTO struct {
-	ID             int    `json:"id" validate:"required"`
 	Name           string `json:"name" validate:"required"`
 	Description    string `json:"description" validate:""`
 	NewAssign      []int  `json:"newAssign" validate:"required"`

@@ -38,9 +38,9 @@ func (permServ *PermissionService) GetAllPermissions() ([]Permissions, responses
 	return permissions, responses.ErrorData{}
 }
 
-func (permServ *PermissionService) UpdatePermission(permission *PermissionsUpdateDTO) responses.ErrorData {
+func (permServ *PermissionService) UpdatePermission(permission *PermissionsUpdateDTO, id int) responses.ErrorData {
 	perm := Permissions{
-		ID:   permission.ID,
+		ID:   id,
 		Name: permission.Name,
 	}
 	err := permServ.permissionRepo.UpdatePermissionRepo(&perm)

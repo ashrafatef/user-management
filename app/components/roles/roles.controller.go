@@ -52,6 +52,7 @@ func (roleCtrl *RoleContoller) Delete(c *fiber.Ctx) error {
 // Update update
 func (roleCtrl *RoleContoller) Update(c *fiber.Ctx) error {
 	var err error
+	id, _ := strconv.Atoi(c.Params("id"))
 	role := new(RoleUpdateDTO)
 
 	if err = c.BodyParser(role); err != nil {
@@ -62,7 +63,7 @@ func (roleCtrl *RoleContoller) Update(c *fiber.Ctx) error {
 	if errors := validation.ValidateStruct(*role); errors.Errors != nil {
 		return responses.SendError(c, errors)
 	}
-	_, Err := roleCtrl.roleService.Update(*role)
+	_, Err := roleCtrl.roleService.Update(*role, id)
 	if Err.Errors != nil {
 		return responses.SendError(c, Err)
 	}
