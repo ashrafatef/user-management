@@ -2,7 +2,7 @@ CREATE TYPE public.permission_type AS ENUM
     ('read', 'create', 'update', 'delete');
 
 CREATE TYPE public.permission_category AS ENUM
-    ('builder', 'nlp', 'wordspotting' ,'insights','settings');
+    ('builder', 'nlp', 'wordspotting' ,'insights','settings','administration','roles','users','bots');
 
 ALTER TYPE public.permission_type
     OWNER TO postgres;
