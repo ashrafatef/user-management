@@ -1,6 +1,3 @@
-TRUNCATE TABLE permissions
-RESTART IDENTITY CASCADE;
-
 -- Adminstration permission
 INSERT INTO permissions
     (name, type, category)
